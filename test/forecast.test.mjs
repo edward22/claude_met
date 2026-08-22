@@ -16,6 +16,7 @@ import { buildForecast, rebaseOffset, stepsForDay, fromCurrentHour } from '../sr
 import { describeCode, toDaytimeCode, codeFamily } from '../src/weather-codes.js';
 import { weatherIcon, ICON_NAMES } from '../src/icons.js';
 import { parseCoordinates, searchPlaces } from '../src/geocode.js';
+import { forecastDays } from '../src/render.js';
 
 const load = (name) => JSON.parse(readFileSync(new URL(`../fixtures/${name}.json`, import.meta.url)));
 const datasets = {
@@ -267,6 +268,24 @@ test('offline place search uses the built-in list', async () => {
   assert.equal(results.length, 1);
   assert.equal(results[0].name, 'Cheltenham (Gloucestershire)');
   assert.deepEqual(await searchPlaces('nowhere-at-all', { offline: true }), []);
+});
+
+test('the day list includes today, so it can be navigated back to', () => {
+  const now = new Date('2026-08-22T09:30:00Z');
+  const f = buildForecast({ datasets, sources: {} }, { rebase: true, now });
+  const days = forecastDays(f, now);
+
+  assert.ok(days.length >= 7);
+  // The regression this guards: today was filtered out of the strip entirely,
+  // leaving no control to return to it once another day was selected.
+  assert.ok(days.some((d) => d.toDateString() === now.toDateString()), 'today must be offered');
+  assert.ok(days.every((d) => d >= new Date(now.getFullYear(), now.getMonth(), now.getDate())),
+    'past days are not offered');
+
+  const times = days.map((d) => d.getTime());
+  assert.deepEqual(times, [...times].sort((a, b) => a - b), 'days must be ordered');
+  assert.equal(new Set(times).size, times.length, 'no duplicate days');
+  assert.ok(days.every((d) => d.getHours() === 0 && d.getMinutes() === 0), 'days are midnights');
 });
 
 test('a forecast with only hourly data still builds', () => {

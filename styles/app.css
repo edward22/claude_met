@@ -127,60 +127,83 @@ html, body {
 }
 .banner svg { display: block; width: 100%; height: 108px; }
 
-/* --- hero ---------------------------------------------------------------- */
+/* --- day strip ----------------------------------------------------------- */
+/* One scroller of days: the selected day is an expanded card, the rest tiles. */
 
 .main[hidden] { display: none; }
 
+.place {
+  margin: 0;
+  padding: 6px 14px 0;
+  font-size: 21px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 45%);
+  position: relative;
+  z-index: 2;
+  margin-top: -58px;
+  min-height: 28px;
+}
+
 .hero-scroll {
-  margin-top: -30px;
+  margin-top: 16px;
   overflow-x: auto;
   overflow-y: visible;
   padding-bottom: 4px;
   scrollbar-color: #b6b6b6 #ededed;
 }
 
-.hero {
+.daystrip {
   display: flex;
   align-items: stretch;
   min-width: max-content;
+  background: var(--panel);
+  border: 1px solid var(--line-soft);
 }
 
-.hero__panel {
+/* The expanded day. */
+.day-panel {
   display: flex;
   align-items: stretch;
-  background: var(--surface);
-  border: 1px solid var(--line-soft);
-  border-radius: 2px;
-  box-shadow: 0 2px 6px rgb(0 0 0 / 14%);
   flex: 0 0 auto;
+  background: var(--surface);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 14%);
+  position: relative;
+  z-index: 1;
 }
 
-.hero__today {
+.day-panel__head {
   padding: 10px 16px 11px 13px;
-  min-width: 277px;
+  min-width: 258px;
 }
 
-.hero__date {
+.day-panel__date {
   margin: 0;
   font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
+.day-panel__dateline {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
 
-.hero__temps { margin: 1px 0 7px; display: flex; align-items: baseline; gap: 11px; line-height: 1.2; }
-.hero__max { font-size: 27px; font-weight: 400; }
-.hero__min { font-size: 19px; color: var(--ink-soft); }
+.day-panel__temps { margin: 1px 0 7px; display: flex; align-items: baseline; gap: 11px; line-height: 1.2; }
+.day-panel__max { font-size: 27px; }
+.day-panel__min { font-size: 19px; color: var(--ink-soft); }
 
-.hero__sun {
+.day-panel__sun {
   margin: 0;
   display: flex; flex-wrap: wrap; gap: 4px 18px;
   font-size: 13px; color: var(--ink);
 }
-.hero__sun-item { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.day-panel__sun-item { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .sun-icon { flex: none; }
 
-.hero__outlook {
+.day-panel__outlook {
   border-left: 1px solid var(--line-soft);
   padding: 11px 16px;
   display: flex;
@@ -191,7 +214,7 @@ html, body {
   max-width: 268px;
 }
 
-.hero__summary {
+.day-panel__summary {
   margin: 0;
   font-size: 15px;
   line-height: 1.4;
@@ -219,16 +242,7 @@ html, body {
 .uv-extreme { background: var(--uv-extreme); }
 .uv-none { background: var(--uv-none); }
 
-/* --- day strip ----------------------------------------------------------- */
-
-.daystrip {
-  display: flex;
-  flex: 1 0 auto;
-  background: var(--panel);
-  border: 1px solid var(--line-soft);
-  border-left: 0;
-}
-
+/* The collapsed days. */
 .day-tile {
   flex: 0 0 130px;
   display: flex; flex-direction: column; align-items: center;
@@ -242,8 +256,8 @@ html, body {
   cursor: pointer;
 }
 .day-tile:first-child { border-left: 0; }
-.day-tile:hover { background: #ebebeb; }
-.day-tile.is-active { background: #e3ebf2; }
+.day-panel + .day-tile { border-left: 0; }
+.day-tile:hover { background: #e8e8e8; }
 
 .day-tile__name { font-size: 13px; color: var(--ink-soft); }
 .day-tile__body { display: flex; align-items: center; gap: 10px; }
@@ -538,11 +552,12 @@ html, body {
   .search__input { font-size: 17px; padding-left: 14px; }
   .banner { height: 92px; margin-top: -38px; }
   .banner svg { height: 92px; }
-  .hero__today { min-width: 232px; padding: 12px 16px 14px 12px; }
-  .hero__date { font-size: 23px; }
-  .hero__max { font-size: 24px; }
-  .hero__outlook { min-width: 400px; padding: 14px 16px; gap: 16px; }
-  .hero__summary { font-size: 15px; max-width: 200px; }
+  .place { font-size: 18px; margin-top: -50px; }
+  .day-panel__head { min-width: 216px; padding: 9px 13px 10px 11px; }
+  .day-panel__date { font-size: 23px; }
+  .day-panel__max { font-size: 24px; }
+  .day-panel__outlook { min-width: 200px; max-width: 236px; padding: 10px 13px; gap: 9px; }
+  .day-panel__summary { font-size: 14px; }
   .nav-btn { width: 42px; height: 42px; top: 86px; }
   .status { margin: 14px 12px 32px; }
 }

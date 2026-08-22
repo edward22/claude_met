@@ -35,6 +35,18 @@ On first run you are asked for an API key and a location. **Leave the key blank*
 to explore with the bundled sample data — that is the intended way to develop
 against this app without spending API calls.
 
+Sample data is a development aid rather than a setting, so it is not offered
+anywhere in the interface. It is used when there is no API key to call with, or
+when `?mock=1` is added to the URL:
+
+```
+http://localhost:8000/?mock=1
+```
+
+That works even with a key saved, so you can check a layout change without
+spending a call, and a live install can never quietly end up on stale bundled
+data.
+
 ## Live data and the CORS problem
 
 This is the one thing that will bite you, so it is worth being blunt about it.
@@ -146,14 +158,19 @@ npm run fixtures
 The generator is deterministic, so the output only changes when the generator
 does. CI checks that the committed fixtures match.
 
-By default, sample timestamps are **shifted onto today** so the display looks
-like a live forecast during development (Settings → Shift sample dates onto
-today). The status line says when this is happening.
+Sample timestamps are **shifted onto today** so the display looks like a live
+forecast during development. The status line says when this is happening.
 
 Everything beyond the original sample's two-day range is synthetic. It is
 plausible, not real weather.
 
 ## What the app shows
+
+The day strip carries every day in the forecast. Whichever day the hourly table
+is showing expands into a card with its temperatures, sunrise and sunset, written
+outlook and UV index, while the rest collapse to tiles. Selecting a tile scrolls
+the table to that day, and scrolling the table moves the expansion to follow —
+including back to today.
 
 The hourly table carries the same nine rows as the original display: weather
 symbol, chance of precipitation, temperature, feels-like temperature, wind

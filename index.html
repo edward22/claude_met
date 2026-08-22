@@ -58,11 +58,10 @@
   </div>
 
   <main id="forecast" class="main" hidden>
+    <h1 class="place" id="place-name"></h1>
+
     <div class="hero-scroll" id="hero-scroll">
-      <div class="hero">
-        <div class="hero__panel" id="hero"></div>
-        <div class="daystrip" id="day-strip"></div>
-      </div>
+      <div class="daystrip" id="day-strip"></div>
     </div>
 
     <section class="hourly" aria-label="Hourly forecast">
@@ -127,7 +126,6 @@
     <p id="error-body"></p>
     <div class="setup__row">
       <button class="btn" id="error-retry" type="button">Try again</button>
-      <button class="btn btn--ghost" id="error-mock" type="button">Use sample data</button>
       <button class="btn btn--ghost" id="error-settings" type="button">Open settings</button>
     </div>
   </div>
@@ -142,13 +140,6 @@
       <span class="field__label">API key</span>
       <input class="field__input" id="set-key" type="password" autocomplete="off" placeholder="Not set">
     </label>
-
-    <fieldset class="field">
-      <legend class="field__label">Data source</legend>
-      <label class="radio"><input type="radio" name="source" value="live" id="set-live"> Live Met Office API</label>
-      <label class="radio"><input type="radio" name="source" value="mock" id="set-mock"> Bundled sample data</label>
-      <label class="check"><input type="checkbox" id="set-rebase"> Shift sample dates onto today</label>
-    </fieldset>
 
     <label class="field">
       <span class="field__label">Cache responses for</span>

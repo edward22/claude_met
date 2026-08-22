@@ -47,7 +47,12 @@ const infoButton = (key) =>
   `<button type="button" class="info" data-info="${key}" aria-label="More about this row">i</button>`;
 
 // ---------------------------------------------------------------------------
-// Hero
+// Day panels
+//
+// The strip carries every day in the forecast. Whichever day the hourly table
+// is showing renders as an expanded card -- temperatures, sunrise and sunset,
+// the written outlook and UV -- and the rest collapse to compact tiles, so the
+// detail on screen always belongs to the day being read.
 // ---------------------------------------------------------------------------
 
 function renderIndices(maxUv) {
@@ -55,46 +60,111 @@ function renderIndices(maxUv) {
   return `
     <div class="indices">
       <div class="index">
-        <span class="index__badge index__badge--square uv-${uv.band}" title="Maximum UV index today: ${maxUv ?? '–'} (${esc(uv.label)})">${esc(uv.short)}</span>
+        <span class="index__badge index__badge--square uv-${uv.band}" title="Maximum UV index: ${maxUv ?? '–'} (${esc(uv.label)})">${esc(uv.short)}</span>
         <span class="index__label">UV</span>
       </div>
     </div>`;
 }
 
-export function renderHero(forecast, settings, now = new Date()) {
-  const today = forecast.days.find((d) => sameDay(d.date, now)) ?? forecast.days[0];
-  const anchor = today?.date ?? now;
-  const todaySteps = stepsForDay(forecast, anchor);
-  const derived = summariseDay(todaySteps);
+/** For days the daily feed misses, take the symbol nearest the middle of the day. */
+function middayCode(steps) {
+  if (!steps.length) return null;
+  const middle = steps.reduce((best, s) =>
+    (Math.abs(s.time.getHours() - 13) < Math.abs(best.time.getHours() - 13) ? s : best));
+  return middle.code;
+}
 
-  const max = today?.max ?? derived?.max;
-  const min = today?.min ?? derived?.min;
-  const maxUv = today?.maxUv ?? derived?.maxUv;
+/** Everything a panel needs about one day, from the daily feed or the steps. */
+function dayModel(forecast, date) {
+  const daily = forecast.days.find((d) => sameDay(d.date, date));
+  const steps = stepsForDay(forecast, date);
+  const derived = summariseDay(steps);
+  return {
+    date: startOfDay(date),
+    steps,
+    max: daily?.max ?? derived?.max ?? null,
+    min: daily?.min ?? derived?.min ?? null,
+    maxUv: daily?.maxUv ?? derived?.maxUv ?? null,
+    code: daily?.code ?? middayCode(steps),
+  };
+}
+
+/**
+ * Every day the forecast covers, today included, from whichever feed describes
+ * it. Today has to be in the list or there is no way to navigate back to it.
+ */
+export function forecastDays(forecast, now = new Date()) {
+  const keys = new Set(forecast.days.map((d) => startOfDay(d.date).getTime()));
+  for (const step of forecast.steps) keys.add(startOfDay(step.time).getTime());
+  const today = startOfDay(now).getTime();
+  return [...keys].filter((k) => k >= today).sort((a, b) => a - b).map((k) => new Date(k));
+}
+
+const dayLabel = (date, now) =>
+  (sameDay(date, now) ? 'Today'
+    : sameDay(date, new Date(now.getTime() + DAY_MS)) ? 'Tomorrow'
+      : fmtDay.format(date));
+
+function sunLine(forecast, date) {
+  const { sunrise, sunset, reason } = sunTimes(date, forecast.latitude, forecast.longitude);
+  if (reason === 'midnight-sun') return '<p class="day-panel__sun">The sun does not set</p>';
+  if (reason === 'polar-night') return '<p class="day-panel__sun">The sun does not rise</p>';
+  return `<p class="day-panel__sun">
+      <span class="day-panel__sun-item">${sunriseIcon()} Sunrise: ${esc(fmtTime.format(sunrise))}</span>
+      <span class="day-panel__sun-item">${sunsetIcon()} Sunset: ${esc(fmtTime.format(sunset))}</span>
+    </p>`;
+}
+
+function expandedPanel(forecast, settings, model, now) {
   const unit = settings.units.temperature;
-
-  const { sunrise, sunset, reason } = sunTimes(anchor, forecast.latitude, forecast.longitude);
-  const sunText = reason === 'midnight-sun' ? 'The sun does not set today'
-    : reason === 'polar-night' ? 'The sun does not rise today'
-      : null;
-
+  const label = dayLabel(model.date, now);
+  const dated = fmtDay.format(model.date);
   return `
-    <div class="hero__today">
-      <p class="hero__date">${esc(fmtDay.format(anchor))}</p>
-      <p class="hero__temps">
-        <span class="hero__max">${esc(formatTemp(max, unit))}</span>
-        <span class="hero__min">${esc(formatTemp(min, unit))}</span>
-      </p>
-      ${sunText
-    ? `<p class="hero__sun">${esc(sunText)}</p>`
-    : `<p class="hero__sun">
-             <span class="hero__sun-item">${sunriseIcon()} Sunrise: ${esc(fmtTime.format(sunrise))}</span>
-             <span class="hero__sun-item">${sunsetIcon()} Sunset: ${esc(fmtTime.format(sunset))}</span>
-           </p>`}
-    </div>
-    <div class="hero__outlook">
-      <p class="hero__summary">${esc(describeDay(todaySteps))}</p>
-      ${renderIndices(maxUv)}
+    <div class="day-panel" data-date="${model.date.toISOString()}" aria-current="date">
+      <div class="day-panel__head">
+        <p class="day-panel__date">${esc(label)}</p>
+        ${label === dated ? '' : `<p class="day-panel__dateline">${esc(dated)}</p>`}
+        <p class="day-panel__temps">
+          <span class="day-panel__max">${esc(formatTemp(model.max, unit))}</span>
+          <span class="day-panel__min">${esc(formatTemp(model.min, unit))}</span>
+        </p>
+        ${sunLine(forecast, model.date)}
+      </div>
+      <div class="day-panel__outlook">
+        <p class="day-panel__summary">${esc(describeDay(model.steps))}</p>
+        ${renderIndices(model.maxUv)}
+      </div>
     </div>`;
+}
+
+function compactTile(settings, model, now) {
+  const unit = settings.units.temperature;
+  const { label, icon } = describeCode(model.code);
+  const brief = describeDayBrief(model.steps);
+  return `
+    <button type="button" class="day-tile" data-date="${model.date.toISOString()}"
+            title="${esc(fmtFull.format(model.date))}${brief ? ` — ${esc(brief)}` : ''}">
+      <span class="day-tile__name">${esc(dayLabel(model.date, now))}</span>
+      <span class="day-tile__body">
+        <span class="day-tile__icon">${weatherIcon(icon, label, 38)}</span>
+        <span class="day-tile__temps">
+          <span class="day-tile__max">${esc(formatTemp(model.max, unit))}</span>
+          <span class="day-tile__min">${esc(formatTemp(model.min, unit))}</span>
+        </span>
+      </span>
+    </button>`;
+}
+
+/**
+ * @param {Date} selected  the day to expand; anything else collapses to a tile
+ */
+export function renderDays(forecast, settings, selected, now = new Date()) {
+  return forecastDays(forecast, now).map((date) => {
+    const model = dayModel(forecast, date);
+    return sameDay(date, selected)
+      ? expandedPanel(forecast, settings, model, now)
+      : compactTile(settings, model, now);
+  }).join('');
 }
 
 const sunriseIcon = () => `<svg class="sun-icon" viewBox="0 0 20 16" aria-hidden="true" width="16" height="13">
@@ -108,38 +178,6 @@ const sunsetIcon = () => `<svg class="sun-icon" viewBox="0 0 20 16" aria-hidden=
   <circle cx="10" cy="10" r="4" fill="#f6a01f"/>
   <path d="M10 5.5 v-3 M6.2 3.2 l1.6 1.8 M13.8 3.2 l-1.6 1.8" stroke="#3d3d3d" stroke-width="1.5" stroke-linecap="round"/>
 </svg>`;
-
-// ---------------------------------------------------------------------------
-// Day strip
-// ---------------------------------------------------------------------------
-
-export function renderDayStrip(forecast, settings, now = new Date()) {
-  const unit = settings.units.temperature;
-  const todayStart = startOfDay(now).getTime();
-
-  // The hero already carries today, so the strip starts from tomorrow -- as it
-  // does on the Met Office page.
-  return forecast.days
-    .filter((d) => startOfDay(d.date).getTime() > todayStart)
-    .map((day) => {
-      const steps = stepsForDay(forecast, day.date);
-      const { label } = describeCode(day.code);
-      const brief = describeDayBrief(steps);
-      return `
-        <button type="button" class="day-tile" data-date="${day.date.toISOString()}"
-                title="${esc(fmtFull.format(day.date))}${brief ? ` — ${esc(brief)}` : ''}">
-          <span class="day-tile__name">${esc(fmtDay.format(day.date))}</span>
-          <span class="day-tile__body">
-            <span class="day-tile__icon">${weatherIcon(describeCode(day.code).icon, label, 38)}</span>
-            <span class="day-tile__temps">
-              <span class="day-tile__max">${esc(formatTemp(day.max, unit))}</span>
-              <span class="day-tile__min">${esc(formatTemp(day.min, unit))}</span>
-            </span>
-          </span>
-        </button>`;
-    })
-    .join('');
-}
 
 // ---------------------------------------------------------------------------
 // Hourly table

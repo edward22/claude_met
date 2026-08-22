@@ -1,10 +1,10 @@
 /**
  * Application shell: settings, loading, and everything the user can click.
  */
-import { loadSettings, saveSettings, clearAll, clearCache, callStats } from './store.js';
+import { loadSettings, saveSettings, clearAll, callStats } from './store.js';
 import { fetchForecast, ApiError } from './api.js';
 import { buildForecast } from './normalise.js';
-import { renderHero, renderDayStrip, renderHourlyTable, INFO, esc, fmtFull, startOfDay } from './render.js';
+import { renderDays, renderHourlyTable, forecastDays, INFO, esc, startOfDay, sameDay } from './render.js';
 import { formatDistance } from './units.js';
 import { searchPlaces, currentPosition, parseCoordinates } from './geocode.js';
 
@@ -12,7 +12,7 @@ const $ = (id) => document.getElementById(id);
 
 const el = {
   main: $('forecast'),
-  hero: $('hero'),
+  placeName: $('place-name'),
   heroScroll: $('hero-scroll'),
   dayStrip: $('day-strip'),
   viewport: $('hourly-viewport'),
@@ -33,8 +33,25 @@ const el = {
   toast: $('toast'),
 };
 
-let settings = loadSettings();
+/**
+ * Sample data is a development aid, not a user setting: it is used when there is
+ * no API key to call with, or when ?mock=1 is present in the URL. Nothing in the
+ * interface can switch to it, so a live install cannot silently end up on stale
+ * bundled data.
+ */
+const FORCE_MOCK = new URLSearchParams(window.location.search).has('mock');
+
+function withDataSource(stored) {
+  return {
+    ...stored,
+    dataSource: FORCE_MOCK || !stored.apiKey ? 'mock' : 'live',
+    rebaseFixtures: true,
+  };
+}
+
+let settings = withDataSource(loadSettings());
 let forecast = null;
+let selectedDate = startOfDay(new Date());
 let pendingLocation = null;
 let searchAbort = null;
 let toastTimer = null;
@@ -42,6 +59,11 @@ let toastTimer = null;
 // ---------------------------------------------------------------------------
 // Chrome helpers
 // ---------------------------------------------------------------------------
+
+function persist(next) {
+  settings = withDataSource(next);
+  saveSettings(settings);
+}
 
 function toast(message) {
   el.toast.textContent = message;
@@ -82,12 +104,17 @@ async function load({ force = false } = {}) {
     forecast = buildForecast(raw, {
       rebase: settings.dataSource === 'mock' && settings.rebaseFixtures,
     });
-    // The API snaps to its nearest grid point; the saved name is the better label.
+    // The API answers from its nearest grid point, but the label and the solar
+    // times belong to the place that was actually asked for -- a few hundred
+    // metres makes no difference to sunrise, and in sample mode the fixture's
+    // own coordinates are somewhere else entirely.
     forecast.locationName = settings.location.name;
-    forecast.latitude ??= settings.location.latitude;
-    forecast.longitude ??= settings.location.longitude;
-    render();
+    forecast.latitude = settings.location.latitude ?? forecast.latitude;
+    forecast.longitude = settings.location.longitude ?? forecast.longitude;
+    // Reveal before rendering: a hidden container has no layout, so measuring
+    // column positions or scroll extents here would read every value as zero.
     showOnly('forecast');
+    render();
     if (raw.errors.length) {
       toast(`Showing cached data — ${raw.errors[0].message}`);
     }
@@ -99,13 +126,26 @@ async function load({ force = false } = {}) {
 
 function render() {
   const now = new Date();
-  el.hero.innerHTML = renderHero(forecast, settings, now);
-  el.dayStrip.innerHTML = renderDayStrip(forecast, settings, now);
+  const days = forecastDays(forecast, now);
+  // A stored selection can fall off the end of the forecast as days roll over.
+  if (!days.some((d) => sameDay(d, selectedDate))) selectedDate = days[0] ?? startOfDay(now);
+
+  el.placeName.textContent = settings.location?.name ?? '';
+  document.title = settings.location?.name
+    ? `${settings.location.name} — Weather forecast`
+    : 'Weather forecast';
+
+  renderDayStrip(now);
   el.viewport.innerHTML = renderHourlyTable(forecast, settings, now);
+  measureDayOffsets();
   renderStatus();
   updateScrollButtons();
   // Open on the current hour rather than the start of the model run.
-  scrollToDay(startOfDay(now), { behaviour: 'auto' });
+  scrollToDay(selectedDate, { behaviour: 'auto' });
+}
+
+function renderDayStrip(now = new Date()) {
+  el.dayStrip.innerHTML = renderDays(forecast, settings, selectedDate, now);
 }
 
 function renderStatus() {
@@ -156,18 +196,79 @@ function renderStatus() {
 // Hourly table scrolling
 // ---------------------------------------------------------------------------
 
+// Left edge of each day's columns, so scrolling can name the day on screen.
+let dayOffsets = [];
+
+function measureDayOffsets() {
+  const table = el.viewport.querySelector('.hourly-table');
+  if (!table || !table.getClientRects().length) { dayOffsets = []; return; }
+  const tableLeft = table.getBoundingClientRect().left;
+  dayOffsets = [...el.viewport.querySelectorAll('.day-head')].map((head) => ({
+    date: new Date(Number(head.id.replace('day-', ''))),
+    left: head.getBoundingClientRect().left - tableLeft,
+  }));
+}
+
+/**
+ * Expands one day and collapses the rest.
+ *
+ * Re-rendering the strip changes its widths, so the newly expanded panel is
+ * brought back into view. `scrollTable` is false when the change came from
+ * scrolling the table, which would otherwise fight the user's own scrolling.
+ */
+function selectDay(date, { scrollTable = true } = {}) {
+  const target = startOfDay(date);
+  if (sameDay(target, selectedDate)) {
+    if (scrollTable) scrollToDay(target);
+    return;
+  }
+  selectedDate = target;
+  renderDayStrip();
+  const panel = el.dayStrip.querySelector('.day-panel');
+  panel?.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'nearest' });
+  if (scrollTable) scrollToDay(target);
+}
+
+/**
+ * A programmatic scroll animates through every day between here and the target,
+ * and each intermediate position would otherwise be read as the user choosing
+ * that day. Selection tracking pauses until the animation has settled.
+ */
+let syncPausedUntil = 0;
+const pauseSync = (ms = 800) => { syncPausedUntil = Date.now() + ms; };
+
 function scrollToDay(date, { behaviour = 'smooth' } = {}) {
   const head = el.viewport.querySelector(`#day-${startOfDay(date).getTime()}`);
   if (!head) return;
   const table = el.viewport.querySelector('.hourly-table');
   if (!table) return;
   const left = head.getBoundingClientRect().left - table.getBoundingClientRect().left;
+  pauseSync(behaviour === 'auto' ? 120 : 800);
   el.viewport.scrollTo({ left, behavior: behaviour });
-  el.dayStrip.querySelectorAll('.day-tile').forEach((tile) => {
-    tile.classList.toggle('is-active',
-      startOfDay(new Date(tile.dataset.date)).getTime() === startOfDay(date).getTime());
-  });
   requestAnimationFrame(updateScrollButtons);
+}
+
+/** The day occupying the left of the viewport, which is the one being read. */
+function dayInView() {
+  if (dayOffsets.length < 2) return null;
+  const edge = el.viewport.scrollLeft + 40;
+  let current = dayOffsets[0];
+  for (const entry of dayOffsets) {
+    if (entry.left <= edge) current = entry;
+  }
+  return current.date;
+}
+
+let syncQueued = false;
+function syncSelectionToScroll() {
+  if (syncQueued) return;
+  syncQueued = true;
+  requestAnimationFrame(() => {
+    syncQueued = false;
+    if (Date.now() < syncPausedUntil) return;
+    const date = dayInView();
+    if (date) selectDay(date, { scrollTable: false });
+  });
 }
 
 function updateScrollButtons() {
@@ -184,12 +285,15 @@ function nudge(direction) {
 
 el.prev.addEventListener('click', () => nudge(-1));
 el.next.addEventListener('click', () => nudge(1));
-el.viewport.addEventListener('scroll', updateScrollButtons, { passive: true });
-window.addEventListener('resize', updateScrollButtons);
+el.viewport.addEventListener('scroll', () => {
+  updateScrollButtons();
+  syncSelectionToScroll();
+}, { passive: true });
+window.addEventListener('resize', () => { measureDayOffsets(); updateScrollButtons(); });
 
 el.dayStrip.addEventListener('click', (event) => {
   const tile = event.target.closest('.day-tile');
-  if (tile) scrollToDay(new Date(tile.dataset.date));
+  if (tile) selectDay(new Date(tile.dataset.date));
 });
 
 // ---------------------------------------------------------------------------
@@ -200,8 +304,7 @@ el.viewport.addEventListener('change', (event) => {
   const select = event.target.closest('.unit-select');
   if (!select) return;
   const left = el.viewport.scrollLeft;
-  settings.units[select.dataset.unit] = select.value;
-  saveSettings(settings);
+  persist({ ...settings, units: { ...settings.units, [select.dataset.unit]: select.value } });
   render();
   el.viewport.scrollLeft = left;   // re-rendering resets scroll; put it back
 });
@@ -293,8 +396,10 @@ el.suggestions.addEventListener('click', (event) => {
   const place = el.suggestions._places[Number(button.dataset.index)];
   hideSuggestions();
   el.searchInput.value = '';
-  settings.location = { name: place.name, latitude: place.latitude, longitude: place.longitude };
-  saveSettings(settings);
+  persist({
+    ...settings,
+    location: { name: place.name, latitude: place.latitude, longitude: place.longitude },
+  });
   load();
 });
 
@@ -372,18 +477,15 @@ $('setup-locate').addEventListener('click', async () => {
 
 $('setup-save').addEventListener('click', () => {
   if (!pendingLocation) return;
-  const key = $('setup-key').value.trim();
-  settings = {
+  persist({
     ...settings,
-    apiKey: key,
-    dataSource: key ? 'live' : 'mock',
+    apiKey: $('setup-key').value.trim(),
     location: {
       name: pendingLocation.name,
       latitude: pendingLocation.latitude,
       longitude: pendingLocation.longitude,
     },
-  };
-  saveSettings(settings);
+  });
   load();
 });
 
@@ -393,9 +495,6 @@ $('setup-save').addEventListener('click', () => {
 
 function openSettings() {
   $('set-key').value = settings.apiKey ?? '';
-  $('set-live').checked = settings.dataSource === 'live';
-  $('set-mock').checked = settings.dataSource !== 'live';
-  $('set-rebase').checked = Boolean(settings.rebaseFixtures);
   $('set-proxy').value = settings.proxyUrl ?? '';
   $('set-cache').value = String(settings.cacheMinutes ?? 60);
   const stats = callStats();
@@ -407,28 +506,19 @@ function openSettings() {
 $('settings-btn').addEventListener('click', openSettings);
 
 $('set-save').addEventListener('click', () => {
-  const key = $('set-key').value.trim();
-  const wantsLive = $('set-live').checked;
-  if (wantsLive && !key) {
-    toast('Add an API key to use the live API.');
-    return;
-  }
-  settings = {
+  persist({
     ...settings,
-    apiKey: key,
-    dataSource: wantsLive ? 'live' : 'mock',
-    rebaseFixtures: $('set-rebase').checked,
+    apiKey: $('set-key').value.trim(),
     proxyUrl: $('set-proxy').value.trim(),
     cacheMinutes: Number($('set-cache').value) || 60,
-  };
-  saveSettings(settings);
+  });
   el.dialog.close();
   load();
 });
 
 $('set-clear').addEventListener('click', () => {
   clearAll();
-  settings = loadSettings();
+  settings = withDataSource(loadSettings());
   forecast = null;
   el.dialog.close();
   showSetup();
@@ -441,12 +531,6 @@ $('set-clear').addEventListener('click', () => {
 
 $('error-retry').addEventListener('click', () => load({ force: true }));
 $('error-settings').addEventListener('click', openSettings);
-$('error-mock').addEventListener('click', () => {
-  settings = { ...settings, dataSource: 'mock' };
-  saveSettings(settings);
-  clearCache();
-  load();
-});
 
 // ---------------------------------------------------------------------------
 
