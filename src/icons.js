@@ -12,8 +12,8 @@ const CLOUD = '#ffffff';
 const CLOUD_DARK = '#d5d9dd';
 const SUN = '#f6a01f';
 const MOON = '#3f4a5a';
-const RAIN = '#1e88c7';
-const SNOW = '#7fb3e0';
+const RAIN = '#1878c0';
+const SNOW = '#5fa3dc';
 const BOLT = '#f6a01f';
 const STROKE = 1.5;
 
@@ -88,29 +88,36 @@ function sun(cx, cy, r, rays = true) {
 function moon(cx, cy, r) {
   const id = `m${Math.round(cx * 10)}${Math.round(cy * 10)}${Math.round(r * 10)}`;
   return `<mask id="${id}">
-      <rect x="0" y="0" width="48" height="40" fill="#fff"/>
+      <rect x="0" y="0" width="48" height="44" fill="#fff"/>
       <circle cx="${cx + r * 0.62}" cy="${cy - r * 0.55}" r="${r * 0.92}" fill="#000"/>
     </mask>
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="${MOON}" mask="url(#${id})"/>`;
 }
 
-const drop = (x, y, scale = 1, colour = RAIN) =>
-  `<path d="M ${x} ${y} c ${2.1 * scale} ${3 * scale} ${2.1 * scale} ${4.4 * scale} 0 ${5.6 * scale} c ${-2.1 * scale} ${-1.2 * scale} ${-2.1 * scale} ${-2.6 * scale} 0 ${-5.6 * scale} Z" fill="${colour}"/>`;
+/**
+ * A teardrop: pointed at the top, round at the bottom. Sized to stay legible at
+ * the ~36px the hourly table renders symbols at, where a finer drop disappears.
+ */
+const drop = (x, y, scale = 1, colour = RAIN) => {
+  const w = 3.1 * scale;
+  const h = 8.2 * scale;
+  return `<path d="M ${x} ${y} c ${w} ${h * 0.54} ${w} ${h * 0.79} 0 ${h} c ${-w} ${-h * 0.21} ${-w} ${-h * 0.46} 0 ${-h} Z" fill="${colour}"/>`;
+};
 
-const flake = (x, y, r = 2.6, colour = SNOW) => {
+const flake = (x, y, r = 3.4, colour = SNOW) => {
   let out = '';
   for (let i = 0; i < 3; i++) {
     const a = (i * Math.PI) / 3;
-    out += `<line x1="${(x - Math.cos(a) * r).toFixed(2)}" y1="${(y - Math.sin(a) * r).toFixed(2)}" x2="${(x + Math.cos(a) * r).toFixed(2)}" y2="${(y + Math.sin(a) * r).toFixed(2)}" stroke="${colour}" stroke-width="1.5" stroke-linecap="round"/>`;
+    out += `<line x1="${(x - Math.cos(a) * r).toFixed(2)}" y1="${(y - Math.sin(a) * r).toFixed(2)}" x2="${(x + Math.cos(a) * r).toFixed(2)}" y2="${(y + Math.sin(a) * r).toFixed(2)}" stroke="${colour}" stroke-width="1.9" stroke-linecap="round"/>`;
   }
   return out;
 };
 
-const pellet = (x, y, r = 1.9) =>
-  `<circle cx="${x}" cy="${y}" r="${r}" fill="${CLOUD}" stroke="${INK}" stroke-width="1.1"/>`;
+const pellet = (x, y, r = 2.4) =>
+  `<circle cx="${x}" cy="${y}" r="${r}" fill="#cfe4f5" stroke="${RAIN}" stroke-width="1.3"/>`;
 
 const bolt = (x, y) =>
-  `<path d="M ${x} ${y} l 4.6 0 l -2.6 4 l 3.6 0 l -7 7.6 l 2 -5.4 l -3.4 0 Z" fill="${BOLT}" stroke="${INK}" stroke-width="1" stroke-linejoin="round"/>`;
+  `<path d="M ${x} ${y} l 5.4 0 l -3 4.7 l 4.2 0 l -8.2 8.9 l 2.3 -6.3 l -4 0 Z" fill="${BOLT}" stroke="${INK}" stroke-width="1.1" stroke-linejoin="round"/>`;
 
 const hazeLines = (colour) => [34, 38].map((y, i) =>
   `<line x1="${11 + i * 3}" y1="${y}" x2="${37 - i * 3}" y2="${y}" stroke="${colour}" stroke-width="2" stroke-linecap="round"/>`).join('');
@@ -131,17 +138,17 @@ const ICONS = {
   mist: () => cloud(SMALL_CLOUD) + hazeLines('#9aa3ab'),
   fog: () => cloud(SMALL_CLOUD, CLOUD_DARK) + hazeLines('#7c858d'),
 
-  drizzle: () => cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.62), 3, 33),
-  'light-rain': () => cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.85), 2, 33),
-  'heavy-rain': () => cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 1), 3, 33),
-  'light-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.85), 1, 33),
-  'light-shower-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.85), 1, 33),
-  'heavy-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.95), 3, 33),
-  'heavy-shower-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.95), 3, 33),
+  drizzle: () => cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.7), 3, 32),
+  'light-rain': () => cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.92), 2, 32),
+  'heavy-rain': () => cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 1.12), 3, 32),
+  'light-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.92), 1, 32),
+  'light-shower-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 0.92), 1, 32),
+  'heavy-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 1.05), 3, 32),
+  'heavy-shower-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + under((x, y) => drop(x, y, 1.05), 3, 32),
 
-  sleet: () => cloud(SMALL_CLOUD) + drop(20, 33, 0.9) + flake(30, 35.5),
-  'sleet-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + drop(20, 33, 0.9) + flake(30, 35.5),
-  'sleet-shower-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + drop(20, 33, 0.9) + flake(30, 35.5),
+  sleet: () => cloud(SMALL_CLOUD) + drop(19, 32, 0.95) + flake(30, 35),
+  'sleet-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + drop(19, 32, 0.95) + flake(30, 35),
+  'sleet-shower-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + drop(19, 32, 0.95) + flake(30, 35),
 
   hail: () => cloud(SMALL_CLOUD) + under((x, y) => pellet(x, y + 2), 3, 33),
   'hail-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + under((x, y) => pellet(x, y + 2), 2, 33),
@@ -154,9 +161,9 @@ const ICONS = {
   'heavy-snow-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + under((x, y) => flake(x, y + 2.5, 3), 3, 33),
   'heavy-snow-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + under((x, y) => flake(x, y + 2.5, 3), 3, 33),
 
-  thunder: () => cloud(SMALL_CLOUD) + bolt(21, 31),
-  'thunder-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + bolt(21, 31),
-  'thunder-shower-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + bolt(21, 31),
+  thunder: () => cloud(SMALL_CLOUD) + bolt(20, 31),
+  'thunder-shower-day': () => sun(16, 13, 8, false) + cloud(SMALL_CLOUD) + bolt(20, 31),
+  'thunder-shower-night': () => moon(17, 12.5, 8) + cloud(SMALL_CLOUD) + bolt(20, 31),
 
   unknown: () => `<text x="24" y="27" text-anchor="middle" font-size="18" fill="#9aa3ab">?</text>`,
 };
@@ -167,7 +174,9 @@ const ICONS = {
  */
 export function weatherIcon(name, title, size = 40) {
   const draw = ICONS[name] ?? ICONS.unknown;
-  return `<svg class="wx-icon" viewBox="0 0 48 40" width="${size}" height="${(size * 40) / 48}" role="img" aria-label="${escapeAttr(title)}">`
+  // The box is taller than the cloud needs so precipitation has somewhere to
+  // fall; every symbol shares it, which keeps the cloud on a common baseline.
+  return `<svg class="wx-icon" viewBox="0 0 48 44" width="${size}" height="${(size * 44) / 48}" role="img" aria-label="${escapeAttr(title)}">`
     + `<title>${escapeAttr(title)}</title>${draw()}</svg>`;
 }
 

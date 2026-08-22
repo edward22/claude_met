@@ -2,7 +2,7 @@
  * Application shell: settings, loading, and everything the user can click.
  */
 import { loadSettings, saveSettings, clearAll, callStats } from './store.js';
-import { fetchForecast, ApiError } from './api.js';
+import { fetchForecast, DATASETS } from './api.js';
 import { buildForecast } from './normalise.js';
 import { renderDays, renderHourlyTable, forecastDays, INFO, esc, startOfDay, sameDay } from './render.js';
 import { formatDistance } from './units.js';
@@ -155,13 +155,19 @@ function renderStatus() {
   const mock = sources.has('mock');
   const stale = sources.has('stale-cache');
 
+  // Where the figures on screen came from. Without this it is impossible to
+  // tell a fresh forecast from one replayed out of the cache after a failure.
   const pill = mock
-    ? '<span class="pill pill--mock">Sample data</span>'
+    ? `<span class="pill pill--mock" title="These are the bundled sample figures, not a real forecast. `
+      + `Add an API key in Settings to fetch live data.">Sample data</span>`
     : stale
-      ? '<span class="pill pill--warn">Cached (refresh failed)</span>'
+      ? `<span class="pill pill--warn" title="The last refresh failed, so these are the most recent `
+        + `figures that were successfully fetched. Press Refresh to try again.">Cached (refresh failed)</span>`
       : live
-        ? '<span class="pill pill--live">Live</span>'
-        : '<span class="pill">Cached</span>';
+        ? `<span class="pill pill--live" title="Fetched from the Met Office just now, using `
+          + `${DATASETS.length} API calls.">Live</span>`
+        : `<span class="pill" title="Served from this browser's cache without calling the API, `
+          + `to stay inside your free-tier budget. Press Refresh to fetch again.">Cached</span>`;
 
   const bits = [pill];
   if (forecast.rebased) {
