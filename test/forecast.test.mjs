@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 
 import {
   formatTemp, formatWind, formatVisibility, visibilityBand,
-  compassPoint, uvBand, temperatureColour, readableInk, convertTemp,
+  compassPoint, uvBand, temperatureColour, readableInk, convertTemp, formatDistance,
 } from '../src/units.js';
 import { sunTimes, isDaylight } from '../src/solar.js';
 import { describeDay } from '../src/summary.js';
@@ -50,6 +50,15 @@ test('visibility bands follow the published boundaries', () => {
   assert.equal(visibilityBand(47037).code, 'EX');
   assert.equal(formatVisibility(1609.344, 'mi'), '1.0');
   assert.equal(formatVisibility(20000, 'km'), '20');
+});
+
+test('grid point distance is reported in metres', () => {
+  // The API value is metres; the sample response carries 27.9057.
+  assert.equal(formatDistance(27.9057), '28 m');
+  assert.equal(formatDistance(419.8), '420 m');
+  assert.equal(formatDistance(999), '999 m');
+  assert.equal(formatDistance(1400), '1.4 km');
+  assert.equal(formatDistance(null), '–');
 });
 
 test('compass points are the direction the wind comes from', () => {

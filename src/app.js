@@ -5,6 +5,7 @@ import { loadSettings, saveSettings, clearAll, clearCache, callStats } from './s
 import { fetchForecast, ApiError } from './api.js';
 import { buildForecast } from './normalise.js';
 import { renderHero, renderDayStrip, renderHourlyTable, INFO, esc, fmtFull, startOfDay } from './render.js';
+import { formatDistance } from './units.js';
 import { searchPlaces, currentPosition, parseCoordinates } from './geocode.js';
 
 const $ = (id) => document.getElementById(id);
@@ -141,8 +142,10 @@ function renderStatus() {
   }
   bits.push('<button type="button" id="refresh-btn">Refresh</button>');
   if (typeof forecast.distanceFromRequest === 'number') {
-    bits.push(`<span title="Distance from your location to the nearest forecast grid point">`
-      + `Grid point ${forecast.distanceFromRequest.toFixed(1)} km away</span>`);
+    bits.push('<span title="The forecast is produced on a grid, not for your exact '
+      + 'coordinates. This is how far the nearest grid point is — a few hundred metres '
+      + 'is normal.">'
+      + `Grid point ${esc(formatDistance(forecast.distanceFromRequest))} away</span>`);
   }
 
   el.status.innerHTML = bits.join('');

@@ -57,6 +57,18 @@ export function formatVisibility(metres, unit) {
   return visibilityBand(metres).code;
 }
 
+/**
+ * Distance from the requested coordinates to the model grid point the forecast
+ * actually came from. The API reports this in metres: UK site-specific data sits
+ * on a roughly 2 km grid, so values are typically a few hundred metres and can
+ * never plausibly reach the tens of kilometres a km reading would imply.
+ */
+export function formatDistance(metres) {
+  if (metres == null) return '–';
+  if (metres < 1000) return `${Math.round(metres)} m`;
+  return `${(metres / 1000).toFixed(1)} km`;
+}
+
 const COMPASS = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
   'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
 
