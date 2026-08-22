@@ -57,7 +57,7 @@ html, body {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  padding: 10px 12px 0;
+  padding: 8px 12px 0;
 }
 
 .search {
@@ -76,9 +76,9 @@ html, body {
   min-width: 0;
   border: 0;
   background: transparent;
-  padding: 14px 8px 14px 20px;
+  padding: 11px 8px 11px 18px;
   font: inherit;
-  font-size: 21px;
+  font-size: 19px;
   color: var(--ink);
 }
 .search__input::placeholder { color: #9b9b9b; }
@@ -87,13 +87,13 @@ html, body {
 
 .search__submit {
   display: grid; place-items: center;
-  width: 56px; height: 52px;
+  width: 52px; height: 46px;
   background: none; border: 0; cursor: pointer; color: var(--ink);
 }
 
 .topbar__settings {
   display: grid; place-items: center;
-  width: 52px; height: 54px;
+  width: 48px; height: 48px;
   background: var(--surface);
   border: 1px solid #cfcfcf; border-radius: 6px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 12%);
@@ -121,18 +121,18 @@ html, body {
 /* --- banner -------------------------------------------------------------- */
 
 .banner {
-  margin-top: -46px;
-  height: 150px;
+  margin-top: -44px;
+  height: 108px;
   overflow: hidden;
 }
-.banner svg { display: block; width: 100%; height: 150px; }
+.banner svg { display: block; width: 100%; height: 108px; }
 
 /* --- hero ---------------------------------------------------------------- */
 
 .main[hidden] { display: none; }
 
 .hero-scroll {
-  margin-top: -40px;
+  margin-top: -30px;
   overflow-x: auto;
   overflow-y: visible;
   padding-bottom: 4px;
@@ -156,55 +156,56 @@ html, body {
 }
 
 .hero__today {
-  padding: 14px 18px 16px 14px;
+  padding: 10px 16px 11px 13px;
   min-width: 277px;
 }
 
 .hero__date {
   margin: 0;
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
-.hero__temps { margin: 2px 0 12px; display: flex; align-items: baseline; gap: 12px; }
-.hero__max { font-size: 30px; font-weight: 400; }
-.hero__min { font-size: 20px; color: var(--ink-soft); }
+.hero__temps { margin: 1px 0 7px; display: flex; align-items: baseline; gap: 11px; line-height: 1.2; }
+.hero__max { font-size: 27px; font-weight: 400; }
+.hero__min { font-size: 19px; color: var(--ink-soft); }
 
 .hero__sun {
   margin: 0;
-  display: flex; flex-wrap: wrap; gap: 6px 20px;
-  font-size: 14px; color: var(--ink);
+  display: flex; flex-wrap: wrap; gap: 4px 18px;
+  font-size: 13px; color: var(--ink);
 }
 .hero__sun-item { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .sun-icon { flex: none; }
 
 .hero__outlook {
   border-left: 1px solid var(--line-soft);
-  padding: 16px 18px;
+  padding: 11px 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 16px;
+  gap: 11px;
   min-width: 266px;
   max-width: 300px;
 }
 
 .hero__summary {
   margin: 0;
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.4;
   color: var(--ink);
 }
 
 .indices { display: flex; gap: 34px; flex: none; }
-.index { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.index__label { font-size: 14px; color: var(--ink); text-align: center; }
+.index { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.index__label { font-size: 13px; color: var(--ink); text-align: center; }
 .index--unavailable .index__label { color: var(--ink-faint); }
 
 .index__badge {
   display: grid; place-items: center;
-  width: 23px; height: 23px;
+  width: 21px; height: 21px;
   border-radius: 50%;
   font-size: 12px; font-weight: 700; color: #fff;
   background: var(--uv-none);
@@ -232,8 +233,8 @@ html, body {
 .day-tile {
   flex: 0 0 130px;
   display: flex; flex-direction: column; align-items: center;
-  gap: 4px;
-  padding: 14px 8px 18px;
+  gap: 2px;
+  padding: 9px 8px 11px;
   background: transparent;
   border: 0;
   border-left: 1px solid var(--line);
@@ -245,17 +246,17 @@ html, body {
 .day-tile:hover { background: #ebebeb; }
 .day-tile.is-active { background: #e3ebf2; }
 
-.day-tile__name { font-size: 14px; color: var(--ink-soft); }
+.day-tile__name { font-size: 13px; color: var(--ink-soft); }
 .day-tile__body { display: flex; align-items: center; gap: 10px; }
 .day-tile__temps { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
-.day-tile__max { font-size: 25px; }
-.day-tile__min { font-size: 15px; color: var(--ink-soft); }
+.day-tile__max { font-size: 23px; }
+.day-tile__min { font-size: 14px; color: var(--ink-soft); }
 
 /* --- hourly table -------------------------------------------------------- */
 
 .hourly {
   position: relative;
-  margin-top: 26px;
+  margin-top: 12px;
   border-top: 1px solid var(--line-soft);
 }
 
@@ -283,7 +284,7 @@ html, body {
 
 .row-days th {
   text-align: left;
-  padding: 14px 16px 10px;
+  padding: 9px 16px 5px;
   background: var(--surface);
   border: 0;
 }
@@ -292,15 +293,15 @@ html, body {
   position: sticky;
   left: 16px;
   display: inline-block;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   background: var(--surface);
   padding-right: 10px;
 }
 
 .row-hours th {
-  padding: 12px 4px;
-  font-size: 15px;
+  padding: 6px 4px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--ink);
   text-align: center;
@@ -309,7 +310,7 @@ html, body {
 }
 
 .row-label td {
-  padding: 10px 14px 6px;
+  padding: 6px 14px 2px;
   text-align: left;
   border: 0;
   background: var(--surface);
@@ -322,11 +323,11 @@ html, body {
   background: var(--surface);
   padding-right: 10px;
 }
-.row-label__text { font-size: 15px; color: var(--ink); }
+.row-label__text { font-size: 13px; color: var(--ink); }
 
 .info {
   display: inline-grid; place-items: center;
-  width: 18px; height: 18px; margin-left: 7px;
+  width: 16px; height: 16px; margin-left: 6px;
   border: 0; border-radius: 50%;
   background: #9b9b9b; color: #fff;
   font-size: 12px; font-style: italic; font-family: Georgia, serif;
@@ -346,37 +347,37 @@ html, body {
 
 .row-values td.cell {
   text-align: center;
-  padding: 6px 2px;
+  padding: 2px 2px;
   border: 0;
   background: var(--surface);
   vertical-align: middle;
   white-space: nowrap;
 }
 
-.is-symbols td.cell { padding: 4px 2px 8px; height: 54px; }
+.is-symbols td.cell { padding: 1px 2px 4px; height: 42px; }
 .wx-icon { display: block; margin: 0 auto; }
 
-.is-pop td.cell { font-size: 15px; color: var(--ink); padding-bottom: 10px; }
+.is-pop td.cell { font-size: 14px; color: var(--ink); padding-bottom: 5px; }
 .is-pop td.cell.is-wet { color: var(--link); }
 
 .row-values.is-temp td.cell--temp {
-  height: 44px;
-  font-size: 17px;
+  height: 32px;
+  font-size: 16px;
   border-left: 2px solid #fff;
   border-right: 2px solid #fff;
 }
 
-.is-wind td.cell--wind { line-height: 1.25; padding-bottom: 8px; }
-.wind-dir { display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 14px; }
+.is-wind td.cell--wind { line-height: 1.15; padding-bottom: 4px; }
+.wind-dir { display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 13px; }
 .wind-arrow { flex: none; }
-.wind-speed { display: block; font-size: 15px; }
+.wind-speed { display: block; font-size: 14px; }
 
-.is-gust td.cell, .is-vis td.cell, .is-humidity td.cell { padding-bottom: 10px; }
+.is-gust td.cell, .is-vis td.cell, .is-humidity td.cell { padding-bottom: 5px; font-size: 14px; }
 
-.is-uv td.cell--uv { padding-bottom: 12px; }
+.is-uv td.cell--uv { padding-bottom: 6px; }
 .uv-chip {
   display: inline-grid; place-items: center;
-  width: 26px; height: 26px;
+  width: 22px; height: 22px;
   border-radius: 3px;
   font-size: 14px; font-weight: 600; color: #fff;
 }
@@ -388,8 +389,8 @@ html, body {
 
 .nav-btn {
   position: absolute;
-  top: 128px;
-  width: 58px; height: 58px;
+  top: 92px;
+  width: 46px; height: 46px;
   border: 0; border-radius: 50%;
   background: #8f8f8f;
   display: grid; place-items: center;
@@ -405,7 +406,7 @@ html, body {
 /* --- status -------------------------------------------------------------- */
 
 .status {
-  margin: 18px 14px 40px;
+  margin: 10px 14px 26px;
   font-size: 13px;
   color: var(--ink-faint);
   display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center;
@@ -536,13 +537,13 @@ html, body {
 
 @media (max-width: 760px) {
   .search__input { font-size: 17px; padding-left: 14px; }
-  .banner { height: 118px; margin-top: -40px; }
-  .banner svg { height: 118px; }
+  .banner { height: 92px; margin-top: -38px; }
+  .banner svg { height: 92px; }
   .hero__today { min-width: 232px; padding: 12px 16px 14px 12px; }
-  .hero__date { font-size: 25px; }
-  .hero__max { font-size: 26px; }
+  .hero__date { font-size: 23px; }
+  .hero__max { font-size: 24px; }
   .hero__outlook { min-width: 400px; padding: 14px 16px; gap: 16px; }
   .hero__summary { font-size: 15px; max-width: 200px; }
-  .nav-btn { width: 46px; height: 46px; top: 116px; }
+  .nav-btn { width: 42px; height: 42px; top: 86px; }
   .status { margin: 14px 12px 32px; }
 }

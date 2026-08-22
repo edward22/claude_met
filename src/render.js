@@ -140,7 +140,7 @@ export function renderDayStrip(forecast, settings, now = new Date()) {
                 title="${esc(fmtFull.format(day.date))}${brief ? ` — ${esc(brief)}` : ''}">
           <span class="day-tile__name">${esc(fmtDay.format(day.date))}</span>
           <span class="day-tile__body">
-            <span class="day-tile__icon">${weatherIcon(describeCode(day.code).icon, label, 42)}</span>
+            <span class="day-tile__icon">${weatherIcon(describeCode(day.code).icon, label, 38)}</span>
             <span class="day-tile__temps">
               <span class="day-tile__max">${esc(formatTemp(day.max, unit))}</span>
               <span class="day-tile__min">${esc(formatTemp(day.min, unit))}</span>
@@ -257,7 +257,7 @@ export function renderHourlyTable(forecast, settings, now = new Date()) {
       ${labelRow('Weather symbols', 'weather')}
       ${valueRow('is-symbols', (s) => {
     const { label, icon } = describeCode(s.code);
-    return `<td class="cell cell--symbol" title="${esc(label)}">${weatherIcon(icon, label, 44)}</td>`;
+    return `<td class="cell cell--symbol" title="${esc(label)}">${weatherIcon(icon, label, 36)}</td>`;
   })}
 
       ${labelRow('Chance of precipitation', 'precipitation')}

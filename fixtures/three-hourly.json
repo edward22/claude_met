@@ -41,7 +41,6 @@
             "probOfHeavyRain": 5,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 13.42,
             "screenDewPointTemperature": 10.5
           },
           {
@@ -67,7 +66,6 @@
             "probOfHeavyRain": 4,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 11.61,
             "screenDewPointTemperature": 10.26
           },
           {
@@ -93,7 +91,6 @@
             "probOfHeavyRain": 7,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 17.17,
             "screenDewPointTemperature": 13.54
           },
           {
@@ -119,7 +116,6 @@
             "probOfHeavyRain": 27,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 20.23,
             "screenDewPointTemperature": 12.71
           },
           {
@@ -145,7 +141,6 @@
             "probOfHeavyRain": 13,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 16.89,
             "screenDewPointTemperature": 10.27
           },
           {
@@ -171,7 +166,6 @@
             "probOfHeavyRain": 2,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.23,
             "screenDewPointTemperature": 8.68
           },
           {
@@ -197,7 +191,6 @@
             "probOfHeavyRain": 1,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 17.14,
             "screenDewPointTemperature": 9.52
           },
           {
@@ -223,7 +216,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 14.63,
             "screenDewPointTemperature": 10.34
           },
           {
@@ -249,7 +241,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 12.52,
             "screenDewPointTemperature": 9.93
           },
           {
@@ -275,7 +266,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 11.57,
             "screenDewPointTemperature": 9.64
           },
           {
@@ -301,7 +291,6 @@
             "probOfHeavyRain": 1,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 13.28,
             "screenDewPointTemperature": 10.75
           },
           {
@@ -327,7 +316,6 @@
             "probOfHeavyRain": 16,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 17.03,
             "screenDewPointTemperature": 11.45
           },
           {
@@ -353,7 +341,6 @@
             "probOfHeavyRain": 1,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 18.18,
             "screenDewPointTemperature": 12.08
           },
           {
@@ -379,7 +366,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 18.54,
             "screenDewPointTemperature": 11.38
           },
           {
@@ -405,7 +391,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 17.08,
             "screenDewPointTemperature": 11.88
           },
           {
@@ -431,7 +416,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 15.36,
             "screenDewPointTemperature": 12.69
           },
           {
@@ -457,7 +441,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 15.18,
             "screenDewPointTemperature": 12.78
           },
           {
@@ -483,7 +466,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 14.48,
             "screenDewPointTemperature": 12.77
           },
           {
@@ -509,7 +491,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 15.93,
             "screenDewPointTemperature": 13.38
           },
           {
@@ -535,7 +516,6 @@
             "probOfHeavyRain": 9,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.4,
             "screenDewPointTemperature": 12.6
           },
           {
@@ -561,7 +541,6 @@
             "probOfHeavyRain": 1,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 20.66,
             "screenDewPointTemperature": 12.79
           },
           {
@@ -587,7 +566,6 @@
             "probOfHeavyRain": 6,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.14,
             "screenDewPointTemperature": 9.71
           },
           {
@@ -613,7 +591,6 @@
             "probOfHeavyRain": 4,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.91,
             "screenDewPointTemperature": 10.64
           },
           {
@@ -639,7 +616,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 15.89,
             "screenDewPointTemperature": 11.66
           },
           {
@@ -665,7 +641,6 @@
             "probOfHeavyRain": 5,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 17.16,
             "screenDewPointTemperature": 13.4
           },
           {
@@ -691,7 +666,6 @@
             "probOfHeavyRain": 6,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 14.22,
             "screenDewPointTemperature": 10.9
           },
           {
@@ -717,7 +691,6 @@
             "probOfHeavyRain": 4,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.12,
             "screenDewPointTemperature": 14.34
           },
           {
@@ -743,7 +716,6 @@
             "probOfHeavyRain": 19,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.96,
             "screenDewPointTemperature": 11.85
           },
           {
@@ -769,7 +741,6 @@
             "probOfHeavyRain": 3,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.42,
             "screenDewPointTemperature": 13.5
           },
           {
@@ -795,7 +766,6 @@
             "probOfHeavyRain": 8,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 22.41,
             "screenDewPointTemperature": 9.58
           },
           {
@@ -821,7 +791,6 @@
             "probOfHeavyRain": 1,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.08,
             "screenDewPointTemperature": 10.64
           },
           {
@@ -847,7 +816,6 @@
             "probOfHeavyRain": 7,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 16.91,
             "screenDewPointTemperature": 11.33
           },
           {
@@ -873,7 +841,6 @@
             "probOfHeavyRain": 4,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 16.11,
             "screenDewPointTemperature": 10.74
           },
           {
@@ -899,7 +866,6 @@
             "probOfHeavyRain": 2,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 16.09,
             "screenDewPointTemperature": 14.37
           },
           {
@@ -925,7 +891,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.38,
             "screenDewPointTemperature": 14.46
           },
           {
@@ -951,7 +916,6 @@
             "probOfHeavyRain": 16,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 22.98,
             "screenDewPointTemperature": 13.17
           },
           {
@@ -977,7 +941,6 @@
             "probOfHeavyRain": 8,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.82,
             "screenDewPointTemperature": 13.62
           },
           {
@@ -1003,7 +966,6 @@
             "probOfHeavyRain": 7,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.35,
             "screenDewPointTemperature": 9.92
           },
           {
@@ -1029,7 +991,6 @@
             "probOfHeavyRain": 4,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.03,
             "screenDewPointTemperature": 12.85
           },
           {
@@ -1055,7 +1016,6 @@
             "probOfHeavyRain": 3,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 18.18,
             "screenDewPointTemperature": 11.41
           },
           {
@@ -1081,7 +1041,6 @@
             "probOfHeavyRain": 5,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 16.31,
             "screenDewPointTemperature": 11.36
           },
           {
@@ -1107,7 +1066,6 @@
             "probOfHeavyRain": 6,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 17.43,
             "screenDewPointTemperature": 13.65
           },
           {
@@ -1133,7 +1091,6 @@
             "probOfHeavyRain": 5,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 18.14,
             "screenDewPointTemperature": 14.39
           },
           {
@@ -1159,7 +1116,6 @@
             "probOfHeavyRain": 20,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 23.58,
             "screenDewPointTemperature": 13.51
           },
           {
@@ -1185,7 +1141,6 @@
             "probOfHeavyRain": 9,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 22.76,
             "screenDewPointTemperature": 13.54
           },
           {
@@ -1211,7 +1166,6 @@
             "probOfHeavyRain": 4,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.65,
             "screenDewPointTemperature": 13.28
           },
           {
@@ -1237,7 +1191,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.25,
             "screenDewPointTemperature": 13.12
           },
           {
@@ -1263,7 +1216,6 @@
             "probOfHeavyRain": 6,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 17.7,
             "screenDewPointTemperature": 12.41
           },
           {
@@ -1289,7 +1241,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.91,
             "screenDewPointTemperature": 14.14
           },
           {
@@ -1315,7 +1266,6 @@
             "probOfHeavyRain": 7,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.59,
             "screenDewPointTemperature": 14.63
           },
           {
@@ -1341,7 +1291,6 @@
             "probOfHeavyRain": 4,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 19.61,
             "screenDewPointTemperature": 15.39
           },
           {
@@ -1367,7 +1316,6 @@
             "probOfHeavyRain": 17,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.06,
             "screenDewPointTemperature": 12.64
           },
           {
@@ -1393,7 +1341,6 @@
             "probOfHeavyRain": 3,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 21.18,
             "screenDewPointTemperature": 13.26
           },
           {
@@ -1419,7 +1366,6 @@
             "probOfHeavyRain": 5,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 23.73,
             "screenDewPointTemperature": 10.16
           },
           {
@@ -1445,7 +1391,6 @@
             "probOfHeavyRain": 5,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 20.98,
             "screenDewPointTemperature": 11.01
           },
           {
@@ -1471,7 +1416,6 @@
             "probOfHeavyRain": 0,
             "probOfHail": 0,
             "probOfSferics": 0,
-            "screenTemperature": 20.84,
             "screenDewPointTemperature": 14.33
           }
         ]

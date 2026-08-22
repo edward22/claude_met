@@ -112,8 +112,10 @@ for (let i = 0; i < extended.length; i += 3) {
     probOfHeavyRain: Math.round(max('probOfPrecipitation') / 3),
     probOfHail: 0,
     probOfSferics: 0,
-    screenTemperature: s.screenTemperature,
     screenDewPointTemperature: s.screenDewPointTemperature,
+    // Deliberately no screenTemperature: the real three-hourly endpoint reports
+    // only maxScreenAirTemp/minScreenAirTemp, and carrying an extra field here
+    // would hide bugs that only show up against live data.
   });
 }
 

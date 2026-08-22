@@ -163,6 +163,36 @@ test('three-hourly field aliases are read', () => {
   assert.ok(coarse.every((s) => s.feelsLike != null), 'feelsLikeTemp alias must resolve');
 });
 
+test('three-hourly temperature falls back to the mean of max and min', () => {
+  // The real three-hourly endpoint carries no screenTemperature, so the fixture
+  // must not either -- otherwise this whole class of bug hides in mock mode.
+  const rows = datasets['three-hourly'].features[0].properties.timeSeries;
+  assert.ok(rows.every((r) => r.screenTemperature === undefined),
+    'fixture must mirror the real endpoint and omit screenTemperature');
+
+  const f = buildForecast({ datasets, sources: {} });
+  const coarse = f.steps.filter((s) => s.resolution === 'three-hourly');
+  assert.ok(coarse.every((s) => s.temperature != null), 'every coarse step needs a temperature');
+
+  // Rows overlapping the hourly range are dropped by the merge, so match on the
+  // first coarse step that actually survives.
+  const step = coarse[0];
+  const row = rows.find((r) => new Date(r.time).getTime() === step.time.getTime());
+  assert.ok(row, 'every coarse step must trace back to a three-hourly row');
+  assert.equal(step.temperature, (row.maxScreenAirTemp + row.minScreenAirTemp) / 2);
+  assert.ok(step.temperature > row.minScreenAirTemp && step.temperature < row.maxScreenAirTemp);
+});
+
+test('hourly temperature still uses the instantaneous value', () => {
+  const f = buildForecast({ datasets, sources: {} });
+  const row = datasets.hourly.features[0].properties.timeSeries[0];
+  const step = f.steps.find((s) => s.time.getTime() === new Date(row.time).getTime());
+  assert.equal(step.resolution, 'hourly');
+  assert.equal(step.temperature, row.screenTemperature);
+  // ...and not the mean, which would differ here.
+  assert.notEqual(step.temperature, (row.maxScreenAirTemp + row.minScreenAirTemp) / 2);
+});
+
 test('rebasing shifts the series onto the current hour', () => {
   const now = new Date('2026-08-22T09:30:00Z');
   const offset = rebaseOffset(datasets.hourly, now);

@@ -17,6 +17,23 @@ const pick = (row, ...keys) => {
   return null;
 };
 
+/**
+ * A representative temperature for a step.
+ *
+ * The hourly endpoint reports an instantaneous `screenTemperature`, but the
+ * three-hourly endpoint reports only the max and min over the period. Averaging
+ * the two gives a single comparable figure for the table; either bound alone
+ * would read hot or cold against the neighbouring hourly columns.
+ */
+function representativeTemperature(row) {
+  const instant = pick(row, 'screenTemperature');
+  if (instant != null) return instant;
+  const max = pick(row, 'maxScreenAirTemp');
+  const min = pick(row, 'minScreenAirTemp');
+  if (max != null && min != null) return (max + min) / 2;
+  return max ?? min;
+}
+
 function seriesOf(payload) {
   const feature = payload?.features?.[0];
   return {
@@ -32,7 +49,7 @@ function normaliseStep(row, resolution) {
   return {
     time: new Date(row.time),
     resolution,
-    temperature: pick(row, 'screenTemperature'),
+    temperature: representativeTemperature(row),
     feelsLike: pick(row, 'feelsLikeTemperature', 'feelsLikeTemp'),
     dewPoint: pick(row, 'screenDewPointTemperature'),
     code: pick(row, 'significantWeatherCode'),
