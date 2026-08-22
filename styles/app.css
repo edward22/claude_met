@@ -187,8 +187,8 @@ html, body {
   flex-direction: column;
   justify-content: space-between;
   gap: 11px;
-  min-width: 266px;
-  max-width: 300px;
+  min-width: 232px;
+  max-width: 268px;
 }
 
 .hero__summary {
@@ -198,10 +198,9 @@ html, body {
   color: var(--ink);
 }
 
-.indices { display: flex; gap: 34px; flex: none; }
+.indices { display: flex; gap: 26px; flex: none; }
 .index { display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .index__label { font-size: 13px; color: var(--ink); text-align: center; }
-.index--unavailable .index__label { color: var(--ink-faint); }
 
 .index__badge {
   display: grid; place-items: center;

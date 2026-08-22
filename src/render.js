@@ -50,23 +50,13 @@ const infoButton = (key) =>
 // Hero
 // ---------------------------------------------------------------------------
 
-function renderIndices(day, maxUv) {
+function renderIndices(maxUv) {
   const uv = uvBand(maxUv);
-  const unavailable = 'Air quality and pollen are published separately by DEFRA and are not '
-    + 'part of the Met Office Site Specific API, so no value is available here.';
   return `
     <div class="indices">
       <div class="index">
         <span class="index__badge index__badge--square uv-${uv.band}" title="Maximum UV index today: ${maxUv ?? '–'} (${esc(uv.label)})">${esc(uv.short)}</span>
         <span class="index__label">UV</span>
-      </div>
-      <div class="index index--unavailable">
-        <span class="index__badge" title="${esc(unavailable)}">–</span>
-        <span class="index__label">Pollution</span>
-      </div>
-      <div class="index index--unavailable">
-        <span class="index__badge" title="${esc(unavailable)}">–</span>
-        <span class="index__label">Pollen</span>
       </div>
     </div>`;
 }
@@ -103,7 +93,7 @@ export function renderHero(forecast, settings, now = new Date()) {
     </div>
     <div class="hero__outlook">
       <p class="hero__summary">${esc(describeDay(todaySteps))}</p>
-      ${renderIndices(today, maxUv)}
+      ${renderIndices(maxUv)}
     </div>`;
 }
 

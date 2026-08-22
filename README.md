@@ -169,7 +169,7 @@ A few things in the original layout are **not** available from this API, and the
 app is explicit about each rather than inventing them:
 
 - **Pollution and pollen** are published separately by DEFRA and are not part of
-  the Site Specific API. Both are shown greyed out with an explanation.
+  the Site Specific API, so they are omitted rather than shown empty.
 - **Sunrise and sunset** are not in the API. They are computed locally from the
   NOAA solar equations, accurate to within a few minutes.
 - **The written outlook** ("Sunny intervals changing to cloudy by lunchtime") is
