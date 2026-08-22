@@ -124,7 +124,7 @@ One refresh costs three calls — hourly, three-hourly and daily.
 
 ## Publishing to GitHub Pages
 
-[`.github/workflows/pages.yml`](.github/workflows/pages.yml) runs the tests and
+[`.github/workflows/main.yml`](.github/workflows/main.yml) runs the tests and
 deploys on every push to `main`, and can be run by hand from the Actions tab.
 
 In the repository, go to **Settings → Pages** and set **Source** to
