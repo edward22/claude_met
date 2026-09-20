@@ -175,8 +175,12 @@ including back to today.
 The hourly table carries the same nine rows as the original display: weather
 symbol, chance of precipitation, temperature, feels-like temperature, wind
 direction and speed, wind gust, visibility, humidity and UV. Temperature and
-feels-like cells are colour-banded, units are switchable per row and remembered,
-and each row has an information button explaining the parameter.
+feels-like values are drawn as colour-banded bars whose height varies with the
+value, so the row reads as a chart as well as a set of numbers. Both rows share
+one scale spanning the whole forecast, which keeps bars comparable while
+scrolling between days; heights follow the Celsius value, so switching to °F
+relabels without reshaping. Units are switchable per row and remembered, and
+each row has an information button explaining the parameter.
 
 Hourly detail runs for about two days and then continues at three-hourly steps
 out to seven days, with each day shown as its own panel in one continuous

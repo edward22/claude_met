@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import {
   formatTemp, formatWind, formatVisibility, visibilityBand,
   compassPoint, uvBand, temperatureColour, readableInk, convertTemp, formatDistance,
+  temperatureBarScale,
 } from '../src/units.js';
 import { sunTimes, isDaylight } from '../src/solar.js';
 import { describeDay } from '../src/summary.js';
@@ -88,6 +89,36 @@ test('temperature colours rise monotonically and stay readable', () => {
   // Matches the reference display, where 13°C and 19°C are distinct ambers.
   assert.equal(temperatureColour(13), '#fbcf84');
   assert.equal(temperatureColour(19), '#f6a455');
+});
+
+test('temperature bars scale with the value', () => {
+  const scale = temperatureBarScale([8, 12, 16, 20, 24]);
+  const heights = [8, 12, 16, 20, 24].map(scale);
+
+  assert.deepEqual(heights, [...heights].sort((a, b) => a - b), 'taller bar means warmer');
+  assert.equal(heights[0], 18, 'the coldest sits at the minimum height');
+  assert.equal(heights.at(-1), 44, 'the warmest sits at the maximum height');
+  assert.ok(heights.every((h) => h >= 18 && h <= 44));
+  // Midpoint of the domain lands midway up the bar.
+  assert.equal(scale(16), 31);
+});
+
+test('a flat forecast is not stretched into false drama', () => {
+  // Two degrees of real variation must not fill the whole height.
+  const scale = temperatureBarScale([14, 14.5, 15, 15.5, 16]);
+  const spread = scale(16) - scale(14);
+  assert.ok(spread > 0, 'it should still vary');
+  assert.ok(spread < 12, `2 degrees should stay subtle, got ${spread}px`);
+});
+
+test('bar scale copes with missing and absent values', () => {
+  const scale = temperatureBarScale([10, null, 20]);
+  assert.equal(scale(null), 18, 'a gap renders at the minimum height');
+  assert.ok(scale(10) < scale(20));
+  // Values beyond the domain clamp rather than overflowing the row.
+  assert.equal(scale(-40), 18);
+  assert.equal(scale(60), 44);
+  assert.equal(temperatureBarScale([])(12), 18, 'an empty forecast must not throw');
 });
 
 test('sunrise and sunset match published times within a few minutes', () => {

@@ -120,6 +120,33 @@ export function temperatureColour(celsius) {
   return '#e9ecef';
 }
 
+/**
+ * Maps temperatures onto bar heights for the forecast table, so the row reads as
+ * a chart as well as a set of values.
+ *
+ * The domain spans the whole forecast rather than the day on screen, so bars
+ * stay comparable while scrolling. `minSpan` stops a flat week from being
+ * stretched into dramatic-looking peaks over a degree or two of real variation.
+ *
+ * @param {number[]} values  temperatures in Celsius, nulls tolerated
+ * @returns {(value: number|null) => number} height in pixels
+ */
+export function temperatureBarScale(values, { minHeight = 18, maxHeight = 44, minSpan = 10 } = {}) {
+  const known = values.filter((v) => v != null);
+  if (!known.length) return () => minHeight;
+
+  let low = Math.min(...known);
+  let high = Math.max(...known);
+  const pad = (minSpan - (high - low)) / 2;
+  if (pad > 0) { low -= pad; high += pad; }
+
+  return (value) => {
+    if (value == null) return minHeight;
+    const fraction = Math.min(1, Math.max(0, (value - low) / (high - low)));
+    return Math.round(minHeight + fraction * (maxHeight - minHeight));
+  };
+}
+
 /** Dark text on light swatches, white on the deep blues and reds. */
 export function readableInk(hex) {
   const [r, g, b] = hex.match(/\w\w/g).map((h) => parseInt(h, 16));

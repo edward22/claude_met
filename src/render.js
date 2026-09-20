@@ -10,7 +10,7 @@ import { describeDay, describeDayBrief } from './summary.js';
 import { stepsForDay, summariseDay, fromCurrentHour } from './normalise.js';
 import {
   formatTemp, formatWind, formatVisibility, visibilityBand,
-  compassPoint, uvBand, temperatureColour, readableInk,
+  compassPoint, uvBand, temperatureColour, readableInk, temperatureBarScale,
 } from './units.js';
 
 const DAY_MS = 86400_000;
@@ -192,10 +192,16 @@ function windArrow(direction) {
   </svg>`;
 }
 
-const tempCell = (value, unit) => {
+const tempCell = (value, unit, barHeight) => {
+  if (value == null) {
+    return '<td class="cell cell--temp"><span class="temp-bar temp-bar--empty">–</span></td>';
+  }
   const colour = temperatureColour(value);
-  return `<td class="cell cell--temp" style="background:${colour};color:${readableInk(colour)}">`
-    + `${esc(formatTemp(value, unit))}</td>`;
+  // Height is driven by the Celsius value, so switching to °F redraws the
+  // labels without changing the shape of the chart.
+  return '<td class="cell cell--temp">'
+    + `<span class="temp-bar" style="height:${barHeight(value)}px;background:${colour};`
+    + `color:${readableInk(colour)}">${esc(formatTemp(value, unit))}</span></td>`;
 };
 
 /** Groups consecutive steps into local calendar days. */
@@ -220,6 +226,13 @@ export function renderHourlyTable(forecast, settings, now = new Date()) {
   if (!groups.length) return '<p class="empty">No hourly detail is available.</p>';
 
   const { temperature: tUnit, wind: wUnit, visibility: vUnit } = settings.units;
+
+  // One scale across both temperature rows and the whole forecast, so the two
+  // rows can be read against each other and against any other day.
+  const barHeight = temperatureBarScale([
+    ...forecast.steps.map((s) => s.temperature),
+    ...forecast.steps.map((s) => s.feelsLike),
+  ]);
 
   // A <col> per rendered cell keeps widths stable under table-layout: fixed.
   const cols = [];
@@ -296,10 +309,10 @@ export function renderHourlyTable(forecast, settings, now = new Date()) {
   })}
 
       ${labelRow('Temperature', 'temperature', select('temperature', tempUnits, tUnit))}
-      ${valueRow('is-temp', (s) => tempCell(s.temperature, tUnit))}
+      ${valueRow('is-temp', (s) => tempCell(s.temperature, tUnit, barHeight))}
 
       ${labelRow(`Feels like temperature (${tempUnits[tUnit]})`, 'feels')}
-      ${valueRow('is-temp', (s) => tempCell(s.feelsLike, tUnit))}
+      ${valueRow('is-temp', (s) => tempCell(s.feelsLike, tUnit, barHeight))}
 
       ${labelRow('Wind direction and speed', 'wind', select('wind', windUnits, wUnit))}
       ${valueRow('is-wind', (s) => `<td class="cell cell--wind"

@@ -386,11 +386,21 @@ html, body {
 .is-pop td.cell.is-wet { color: var(--link); }
 
 .row-values.is-temp td.cell--temp {
-  height: 32px;
+  height: 46px;
+  padding: 0 2px;
+  vertical-align: bottom;
   font-size: 16px;
-  border-left: 2px solid #fff;
-  border-right: 2px solid #fff;
+  background: var(--surface);
 }
+/* Bars sit on a common baseline, so height reads as temperature across the row. */
+.temp-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border-radius: 1px;
+}
+.temp-bar--empty { height: 18px; background: var(--panel); color: var(--ink-faint); }
 
 .is-wind td.cell--wind { line-height: 1.15; padding-bottom: 4px; }
 .wind-dir { display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 13px; }
